@@ -55,7 +55,7 @@ export function DownloadDialog({
                 <div className="grid gap-4 py-4">
                     {hasAdBlock ? (
                         <div className="space-y-4">
-                            <p className="text-sm">
+                            <p className="text-sm text-red-500 font-bold">
                                 We noticed you're using an ad blocker. We
                                 understand if you prefer to keep it enabled, but
                                 seeing our ads helps keep this service free.

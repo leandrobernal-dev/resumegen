@@ -11,6 +11,7 @@ import { PlusCircle, Trash2, Download } from "lucide-react";
 import type { ResumeData, Experience, Education } from "@/types/resume";
 import { generatePDF } from "@/utils/generatePdf";
 import { PDFPreview } from "@/components/preview";
+import { DownloadDialog } from "@/components/download-dialog";
 
 import { generateId } from "@/utils/generateId";
 import { TemplateSelector } from "@/components/template-selector";
@@ -29,6 +30,8 @@ export default function ResumeGenerator() {
         skills: [],
         template: "classic",
     });
+
+    const [showDownLoadDialog, setShowDownloadDialog] = useState(false);
 
     const addExperience = () => {
         setResumeData({
@@ -121,6 +124,15 @@ export default function ResumeGenerator() {
             ...resumeData,
             education: resumeData.education.filter((edu) => edu.id !== id),
         });
+    };
+
+    const handleDownload = () => {
+        const pdf = generatePDF(resumeData);
+        pdf.save(
+            `${resumeData.personalInfo.fullName
+                .toLowerCase()
+                .replace(/\s+/g, "-")}-resume.pdf`
+        );
     };
 
     return (
@@ -463,22 +475,18 @@ export default function ResumeGenerator() {
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <h2 className="text-2xl font-bold">Preview</h2>
-                    <Button
-                        onClick={() => {
-                            const pdf = generatePDF(resumeData);
-                            pdf.save(
-                                `${resumeData.personalInfo.fullName
-                                    .toLowerCase()
-                                    .replace(/\s+/g, "-")}-resume.pdf`
-                            );
-                        }}
-                    >
+                    <Button onClick={() => setShowDownloadDialog(true)}>
                         <Download className="mr-2 h-4 w-4" />
                         Download PDF
                     </Button>
                 </div>
                 <PDFPreview data={resumeData} />
             </div>
+            <DownloadDialog
+                open={showDownLoadDialog}
+                onOpenChange={setShowDownloadDialog}
+                onDownload={handleDownload}
+            />
         </div>
     );
 }

@@ -19,11 +19,11 @@ import { TemplateSelector } from "@/components/template-selector";
 export default function ResumeGenerator() {
     const [resumeData, setResumeData] = useState<ResumeData>({
         personalInfo: {
-            fullName: "",
-            email: "",
-            phone: "",
-            location: "",
-            summary: "",
+            fullName: "John Doe",
+            email: "john.doe@example.com",
+            phone: "(123) 456-7890",
+            location: "New York, NY",
+            summary: "Experienced professional with a track record of...",
         },
         experience: [],
         education: [],

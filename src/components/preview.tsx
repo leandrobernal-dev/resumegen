@@ -10,7 +10,7 @@ interface PDFPreviewProps {
 
 export function PDFPreview({ data }: PDFPreviewProps) {
     const [pdfUrl, setPdfUrl] = useState<string>("");
-    const timeoutRef = useRef<NodeJS.Timeout>();
+    const timeoutRef = useRef<NodeJS.Timeout>(null);
 
     useEffect(() => {
         // Clear previous timeout to prevent multiple renders
@@ -22,7 +22,7 @@ export function PDFPreview({ data }: PDFPreviewProps) {
         timeoutRef.current = setTimeout(() => {
             const pdf = generatePDF(data);
             const pdfBlob = pdf.output("bloburl");
-            setPdfUrl(pdfBlob);
+            setPdfUrl(pdfBlob.toString());
         }, 500);
 
         return () => {

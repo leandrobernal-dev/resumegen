@@ -23,8 +23,10 @@ export function PDFPreview({ data }: PDFPreviewProps) {
     const [scale] = useState(1.5);
     const timeoutRef = useRef<NodeJS.Timeout>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
+        setIsLoading(true);
         // Clear previous timeout to prevent multiple renders
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
@@ -45,6 +47,8 @@ export function PDFPreview({ data }: PDFPreviewProps) {
                 setPdfDoc(loadedPdf);
             } catch (error) {
                 console.error("Error generating PDF preview:", error);
+            } finally {
+                setIsLoading(false);
             }
         }, 500);
 
@@ -110,8 +114,16 @@ export function PDFPreview({ data }: PDFPreviewProps) {
     return (
         <div
             ref={containerRef}
-            className="w-full bg-white rounded-lg shadow-2xl overflow-hidden"
+            className="w-full bg-white rounded-lg shadow-lg overflow-hidden relative"
         >
+            {isLoading && (
+                <div className="absolute inset-0 bg-black/5 backdrop-blur-[2px] z-10 flex items-center justify-center">
+                    <div className="bg-background/95 p-4 rounded-lg shadow-lg flex items-center gap-2">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary" />
+                        <span className="text-sm">Updating preview...</span>
+                    </div>
+                </div>
+            )}
             {!pdfDoc ? (
                 <div className="w-full h-[842px] bg-muted animate-pulse" />
             ) : (

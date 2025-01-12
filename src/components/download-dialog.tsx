@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CountdownTimer } from "./countdown-timer";
+import { useDetectAdBlock } from "adblock-detect-react";
 
 interface DownloadDialogProps {
     open: boolean;
@@ -21,6 +22,8 @@ export function DownloadDialog({
     onOpenChange,
     onDownload,
 }: DownloadDialogProps) {
+    const adBlockDetected = useDetectAdBlock();
+
     const [hasAdBlock, setHasAdBlock] = useState(false);
     const [showDownloadButton, setShowDownloadButton] = useState(false);
 
@@ -33,29 +36,7 @@ export function DownloadDialog({
     }, [open]);
 
     const checkAdBlocker = async () => {
-        try {
-            const testAd = document.createElement("div");
-            testAd.innerHTML = "&nbsp;";
-            testAd.className = "adsbox";
-            document.body.appendChild(testAd);
-
-            // Wait for potential ad blocker to hide the element
-            await new Promise((resolve) => setTimeout(resolve, 100));
-
-            const isBlocked = testAd.offsetHeight === 0;
-            setHasAdBlock(isBlocked);
-
-            // Clean up test element
-            document.body.removeChild(testAd);
-
-            // If no ad blocker, show ad
-            if (!isBlocked) {
-                // Simulate ad loading time
-                await new Promise((resolve) => setTimeout(resolve, 2000));
-                setShowDownloadButton(true);
-            }
-        } catch (error) {
-            console.error("Error checking for ad blocker:", error);
+        if (adBlockDetected) {
             setHasAdBlock(true);
         }
     };

@@ -8,7 +8,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Settings2 } from "lucide-react";
 import Image from "next/image";
-import type { Template } from "../types/resume";
+import type { Template } from "@/types/resume";
+import { useState } from "react";
 
 interface TemplateSelectorProps {
     selectedTemplate: Template["id"];
@@ -58,8 +59,9 @@ export function TemplateSelector({
     selectedTemplate,
     onSelect,
 }: TemplateSelectorProps) {
+    const [open, setOpen] = useState(false);
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button variant="outline" size="sm">
                     <Settings2 className="w-4 h-4 mr-2" />
@@ -74,7 +76,10 @@ export function TemplateSelector({
                     {templates.map((template) => (
                         <button
                             key={template.id}
-                            onClick={() => onSelect(template.id)}
+                            onClick={() => {
+                                onSelect(template.id);
+                                setOpen(false);
+                            }}
                             className={`relative flex flex-col gap-2 rounded-lg border-2 transition-all hover:border-primary ${
                                 selectedTemplate === template.id
                                     ? "border-primary ring-2 ring-primary ring-offset-2"

@@ -9,12 +9,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { PlusCircle, Trash2, Download } from "lucide-react";
 import type { ResumeData, Experience, Education } from "@/types/resume";
-import { generatePDF } from "@/utils/generatePdf";
-import { PDFPreview } from "@/components/preview";
 import { DownloadDialog } from "@/components/download-dialog";
 
 import { generateId } from "@/utils/generateId";
 import { TemplateSelector } from "@/components/template-selector";
+import { PDFPreview } from "@/components/preview";
 
 export default function ResumeGenerator() {
     const [resumeData, setResumeData] = useState<ResumeData>({
@@ -124,15 +123,6 @@ export default function ResumeGenerator() {
             ...resumeData,
             education: resumeData.education.filter((edu) => edu.id !== id),
         });
-    };
-
-    const handleDownload = () => {
-        const pdf = generatePDF(resumeData);
-        pdf.save(
-            `${resumeData.personalInfo.fullName
-                .toLowerCase()
-                .replace(/\s+/g, "-")}-resume.pdf`
-        );
     };
 
     return (
@@ -485,7 +475,7 @@ export default function ResumeGenerator() {
             <DownloadDialog
                 open={showDownLoadDialog}
                 onOpenChange={setShowDownloadDialog}
-                onDownload={handleDownload}
+                data={resumeData}
             />
         </div>
     );

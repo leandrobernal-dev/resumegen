@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import type { ResumeData } from "../types/resume";
-import { generatePDF } from "@/utils/generatePdf";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { pdf } from "@react-pdf/renderer";
+import type { ResumeData } from "@/types/resume";
 import * as pdfjsLib from "pdfjs-dist";
 import { PDFDocumentProxy } from "pdfjs-dist";
+import DynamicTemplateRenderer from "./resume-templates/DynamicTemplateRenderer";
 
-// Initialize PDF.js worker
-// pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
     "pdfjs-dist/build/pdf.worker.min.mjs",
     import.meta.url
@@ -18,33 +17,46 @@ interface PDFPreviewProps {
 }
 
 export function PDFPreview({ data }: PDFPreviewProps) {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
     const [pdfDoc, setPdfDoc] = useState<PDFDocumentProxy | null>(null);
     const [scale] = useState(1.5);
-    const timeoutRef = useRef<NodeJS.Timeout>(null);
-    const containerRef = useRef<HTMLDivElement>(null);
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [numPages, setNumPages] = useState(0);
+    const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
+
+    const handleCanvasRef = useCallback(
+        (index: number) => (el: HTMLCanvasElement | null) => {
+            canvasRefs.current[index] = el;
+        },
+        []
+    );
 
     useEffect(() => {
         setIsLoading(true);
-        // Clear previous timeout to prevent multiple renders
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
         }
 
-        // Cleanup previous PDF document
         if (pdfDoc) {
             pdfDoc.destroy();
         }
 
-        // Debounce the PDF generation
         timeoutRef.current = setTimeout(async () => {
             try {
-                const pdf = generatePDF(data);
-                const pdfData = pdf.output("arraybuffer");
-                const loadedPdf = await pdfjsLib.getDocument({ data: pdfData })
-                    .promise;
+                // Generate PDF Blob using @react-pdf/renderer
+                const pdfBlob = await pdf(
+                    <DynamicTemplateRenderer data={data} />
+                ).toBlob();
+
+                // Load the Blob into pdfjs-dist
+                const loadedPdf = await pdfjsLib.getDocument({
+                    data: await pdfBlob.arrayBuffer(),
+                }).promise;
+
                 setPdfDoc(loadedPdf);
+                setNumPages(loadedPdf.numPages);
+                canvasRefs.current = new Array(loadedPdf.numPages).fill(null);
             } catch (error) {
                 console.error("Error generating PDF preview:", error);
             } finally {
@@ -63,39 +75,47 @@ export function PDFPreview({ data }: PDFPreviewProps) {
     }, [data]);
 
     useEffect(() => {
-        async function renderPage() {
-            if (!pdfDoc || !canvasRef.current) return;
+        async function renderPages() {
+            if (!pdfDoc || !containerRef.current) return;
 
             try {
-                const page = await pdfDoc.getPage(1);
-                const viewport = page.getViewport({ scale });
-                const canvas = canvasRef.current;
-                const context = canvas.getContext("2d");
+                const pages = await Promise.all(
+                    Array.from({ length: numPages }, (_, i) =>
+                        pdfDoc.getPage(i + 1)
+                    )
+                );
 
-                if (!context) return;
+                for (let i = 0; i < pages.length; i++) {
+                    const page = pages[i];
+                    const canvas = canvasRefs.current[i];
+                    if (!canvas) continue;
 
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
+                    const viewport = page.getViewport({ scale });
+                    const context = canvas.getContext("2d");
 
-                // Make canvas width responsive
-                if (containerRef.current) {
+                    if (!context) continue;
+
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    // Make canvas width responsive
                     const containerWidth = containerRef.current.clientWidth;
                     const ratio = containerWidth / viewport.width;
                     canvas.style.width = "100%";
                     canvas.style.height = `${viewport.height * ratio}px`;
-                }
 
-                await page.render({
-                    canvasContext: context,
-                    viewport,
-                }).promise;
+                    await page.render({
+                        canvasContext: context,
+                        viewport,
+                    }).promise;
+                }
             } catch (error) {
-                console.error("Error rendering PDF page:", error);
+                console.error("Error rendering PDF pages:", error);
             }
         }
 
-        renderPage();
-    }, [pdfDoc, scale]);
+        renderPages();
+    }, [pdfDoc, scale, numPages]);
 
     // Handle window resize
     useEffect(() => {
@@ -112,10 +132,7 @@ export function PDFPreview({ data }: PDFPreviewProps) {
     }, [pdfDoc]);
 
     return (
-        <div
-            ref={containerRef}
-            className="w-full bg-white rounded-lg shadow-lg overflow-hidden relative"
-        >
+        <div ref={containerRef} className="relative w-full space-y-4">
             {isLoading && (
                 <div className="absolute inset-0 bg-black/5 backdrop-blur-[2px] z-10 flex items-center justify-center">
                     <div className="bg-background/95 p-4 rounded-lg shadow-lg flex items-center gap-2">
@@ -125,9 +142,16 @@ export function PDFPreview({ data }: PDFPreviewProps) {
                 </div>
             )}
             {!pdfDoc ? (
-                <div className="w-full h-[842px] bg-muted animate-pulse" />
+                <div className="w-full h-[842px] bg-muted animate-pulse rounded-lg" />
             ) : (
-                <canvas ref={canvasRef} className="w-full" />
+                Array.from({ length: numPages }, (_, i) => (
+                    <div
+                        key={i}
+                        className="bg-white rounded-lg shadow-lg overflow-hidden"
+                    >
+                        <canvas ref={handleCanvasRef(i)} className="w-full" />
+                    </div>
+                ))
             )}
         </div>
     );

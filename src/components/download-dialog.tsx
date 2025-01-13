@@ -10,17 +10,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { CountdownTimer } from "./countdown-timer";
 import { useDetectAdBlock } from "adblock-detect-react";
+import { pdf } from "@react-pdf/renderer";
+import { ResumeData } from "@/types/resume";
+import DynamicTemplateRenderer from "./resume-templates/DynamicTemplateRenderer";
 
 interface DownloadDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    onDownload: () => void;
+    data: ResumeData;
 }
 
 export function DownloadDialog({
     open,
     onOpenChange,
-    onDownload,
+    data,
 }: DownloadDialogProps) {
     const adBlockDetected = useDetectAdBlock();
 
@@ -41,9 +44,26 @@ export function DownloadDialog({
         }
     };
 
-    const handleDownload = () => {
-        onOpenChange(false);
-        onDownload();
+    const handleDownload2 = async () => {
+        try {
+            // Generate the PDF as a blob
+            const blob = await pdf(
+                <DynamicTemplateRenderer data={data} />
+            ).toBlob();
+
+            // Create a temporary anchor element for the download
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `${data.personalInfo.fullName}_Resume.pdf`;
+
+            // Programmatically trigger the download
+            link.click();
+
+            // Clean up the URL object
+            URL.revokeObjectURL(link.href);
+        } catch (error) {
+            console.error("Error downloading PDF:", error);
+        }
     };
 
     return (
@@ -62,7 +82,7 @@ export function DownloadDialog({
                             </p>
                             {!showDownloadButton && (
                                 <CountdownTimer
-                                    seconds={10}
+                                    seconds={15}
                                     onComplete={() =>
                                         setShowDownloadButton(true)
                                     }
@@ -84,7 +104,7 @@ export function DownloadDialog({
                         </div>
                     )}
                     {showDownloadButton && (
-                        <Button onClick={handleDownload}>
+                        <Button onClick={handleDownload2}>
                             Continue to Download
                         </Button>
                     )}

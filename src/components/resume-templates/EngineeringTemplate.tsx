@@ -105,6 +105,24 @@ const styles = StyleSheet.create({
         fontSize: 10,
         color: "#666",
     },
+    certificationItem: {
+        fontSize: 10,
+        marginBottom: 4,
+    },
+    projectItem: {
+        fontSize: 10,
+        marginBottom: 8,
+    },
+    languageItem: {
+        fontSize: 10,
+        marginBottom: 4,
+    },
+    website: {
+        fontSize: 10,
+        color: "#2B4562",
+        textAlign: "center",
+        marginTop: 10,
+    },
 });
 
 export default function EngineeringTemplate({ data }: { data: ResumeData }) {
@@ -122,102 +140,145 @@ export default function EngineeringTemplate({ data }: { data: ResumeData }) {
                         {data.personalInfo.location} | {data.personalInfo.phone}{" "}
                         | {data.personalInfo.email}
                     </Text>
+                    {data.personalInfo.website && (
+                        <Text style={styles.website}>
+                            {data.personalInfo.website}
+                        </Text>
+                    )}
                 </View>
 
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>
-                        Professional Experience
-                    </Text>
-                    {data.experience.map((exp) => (
-                        <View key={exp.id} style={styles.experienceItem}>
-                            <View style={styles.experienceHeader}>
-                                <Text style={styles.companyName}>
-                                    {exp.company}
+                {data.experience.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>
+                            Professional Experience
+                        </Text>
+                        {data.experience.map((exp) => (
+                            <View key={exp.id} style={styles.experienceItem}>
+                                <View style={styles.experienceHeader}>
+                                    <Text style={styles.companyName}>
+                                        {exp.company}
+                                    </Text>
+                                    <Text style={styles.location}>
+                                        {exp.location}
+                                    </Text>
+                                </View>
+                                <Text style={styles.roleDate}>
+                                    {exp.position} | {exp.startDate} -{" "}
+                                    {exp.endDate}
                                 </Text>
-                                <Text style={styles.location}>
-                                    {exp.location}
+                                <Text style={styles.bulletPoint}>
+                                    • {exp.description}
                                 </Text>
                             </View>
-                            <Text style={styles.roleDate}>
-                                {exp.position} | {exp.startDate} - {exp.endDate}
-                            </Text>
-                            <Text style={styles.bulletPoint}>
-                                • {exp.description}
-                            </Text>
-                        </View>
-                    ))}
-                </View>
+                        ))}
+                    </View>
+                )}
 
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Technical Skills</Text>
-                    <View style={styles.skillsGrid}>
-                        {/* Group skills into categories */}
-                        <View style={styles.skillCategory}>
-                            <Text style={styles.skillTitle}>Programming</Text>
-                            {data.skills
-                                .filter(
-                                    (skill) =>
-                                        skill
-                                            .toLowerCase()
-                                            .includes("programming") ||
-                                        skill
-                                            .toLowerCase()
-                                            .includes("development")
-                                )
-                                .map((skill, index) => (
-                                    <Text key={index} style={styles.skillItem}>
-                                        • {skill}
-                                    </Text>
-                                ))}
-                        </View>
-                        <View style={styles.skillCategory}>
-                            <Text style={styles.skillTitle}>
-                                Tools & Technologies
-                            </Text>
-                            {data.skills
-                                .filter(
-                                    (skill) =>
-                                        !skill
-                                            .toLowerCase()
-                                            .includes("programming") &&
-                                        !skill
-                                            .toLowerCase()
-                                            .includes("development")
-                                )
-                                .map((skill, index) => (
-                                    <Text key={index} style={styles.skillItem}>
-                                        • {skill}
-                                    </Text>
-                                ))}
+                {data.skills.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>
+                            Technical Skills
+                        </Text>
+                        <View style={styles.skillsGrid}>
+                            <View style={styles.skillCategory}>
+                                <Text style={styles.skillTitle}>
+                                    Programming
+                                </Text>
+                                {data.skills
+                                    .filter(
+                                        (skill) =>
+                                            skill
+                                                .toLowerCase()
+                                                .includes("programming") ||
+                                            skill
+                                                .toLowerCase()
+                                                .includes("development")
+                                    )
+                                    .map((skill, index) => (
+                                        <Text
+                                            key={index}
+                                            style={styles.skillItem}
+                                        >
+                                            • {skill}
+                                        </Text>
+                                    ))}
+                            </View>
+                            <View style={styles.skillCategory}>
+                                <Text style={styles.skillTitle}>
+                                    Tools & Technologies
+                                </Text>
+                                {data.skills
+                                    .filter(
+                                        (skill) =>
+                                            !skill
+                                                .toLowerCase()
+                                                .includes("programming") &&
+                                            !skill
+                                                .toLowerCase()
+                                                .includes("development")
+                                    )
+                                    .map((skill, index) => (
+                                        <Text
+                                            key={index}
+                                            style={styles.skillItem}
+                                        >
+                                            • {skill}
+                                        </Text>
+                                    ))}
+                            </View>
                         </View>
                     </View>
-                </View>
+                )}
 
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Education</Text>
-                    {data.education.map((edu) => (
-                        <View key={edu.id} style={styles.education}>
-                            <Text style={styles.degree}>
-                                {edu.degree} in {edu.fieldOfStudy}
-                            </Text>
-                            <Text style={styles.school}>
-                                {edu.school} | {edu.startDate} - {edu.endDate}
-                            </Text>
-                            {/* {edu.gpa && <Text style={styles.gpa}>GPA: {edu.gpa}</Text>} */}
-                        </View>
-                    ))}
-                </View>
+                {data.education.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Education</Text>
+                        {data.education.map((edu) => (
+                            <View key={edu.id} style={styles.education}>
+                                <Text style={styles.degree}>
+                                    {edu.degree} in {edu.fieldOfStudy}
+                                </Text>
+                                <Text style={styles.school}>
+                                    {edu.school} | {edu.startDate} -{" "}
+                                    {edu.endDate}
+                                </Text>
+                            </View>
+                        ))}
+                    </View>
+                )}
 
-                {/* {data.certifications && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Certifications</Text>
-            {data.certifications.map((cert, index) => (
-              <Text key={index} style={styles.bulletPoint}>
-                • {cert}
-              </Text>
-            ))}
-          </View>
-        )} */}
+                {data.certifications.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Certifications</Text>
+                        {data.certifications.map((cert, index) => (
+                            <Text key={index} style={styles.certificationItem}>
+                                • {cert.name} - {cert.issuer}
+                            </Text>
+                        ))}
+                    </View>
+                )}
+
+                {data.projects.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Projects</Text>
+                        {data.projects.map((project, index) => (
+                            <Text key={index} style={styles.projectItem}>
+                                • {project.name}: {project.description}
+                            </Text>
+                        ))}
+                    </View>
+                )}
+
+                {data.languages.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Languages</Text>
+                        {data.languages.map((language, index) => (
+                            <Text key={index} style={styles.languageItem}>
+                                • {language.name}
+                            </Text>
+                        ))}
+                    </View>
+                )}
             </Page>
         </Document>
     );

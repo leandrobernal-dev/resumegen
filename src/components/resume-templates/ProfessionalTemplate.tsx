@@ -80,50 +80,119 @@ export default function ProfessionalTemplate({ data }: { data: ResumeData }) {
                     </Text>
                 </View>
 
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>
-                        Professional Experience
-                    </Text>
-                    {data.experience.map((exp) => (
-                        <View key={exp.id} style={styles.experienceItem}>
-                            <Text style={styles.jobTitle}>{exp.position}</Text>
-                            <Text style={styles.jobDetails}>
-                                {exp.company} | {exp.startDate} - {exp.endDate}
-                            </Text>
-                            <Text style={styles.description}>
-                                {exp.description}
-                            </Text>
-                        </View>
-                    ))}
-                </View>
+                {data.experience.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>
+                            Professional Experience
+                        </Text>
+                        {data.experience.map((exp) => (
+                            <View key={exp.id} style={styles.experienceItem}>
+                                <Text style={styles.jobTitle}>
+                                    {exp.position}
+                                </Text>
+                                <Text style={styles.jobDetails}>
+                                    {exp.company} | {exp.startDate} -{" "}
+                                    {exp.endDate}
+                                </Text>
+                                <Text style={styles.description}>
+                                    {exp.description}
+                                </Text>
+                            </View>
+                        ))}
+                    </View>
+                )}
 
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Education</Text>
-                    {data.education.map((edu) => (
-                        <View key={edu.id} style={styles.experienceItem}>
-                            <Text style={styles.jobTitle}>
-                                {edu.degree} in {edu.fieldOfStudy}
-                            </Text>
-                            <Text style={styles.jobDetails}>
-                                {edu.school} | {edu.startDate} - {edu.endDate}
-                            </Text>
-                            <Text style={styles.description}>
-                                {edu.description}
-                            </Text>
-                        </View>
-                    ))}
-                </View>
+                {data.education.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Education</Text>
+                        {data.education.map((edu) => (
+                            <View key={edu.id} style={styles.experienceItem}>
+                                <Text style={styles.jobTitle}>
+                                    {edu.degree} in {edu.fieldOfStudy}
+                                </Text>
+                                <Text style={styles.jobDetails}>
+                                    {edu.school} | {edu.startDate} -{" "}
+                                    {edu.endDate}
+                                </Text>
+                                <Text style={styles.description}>
+                                    {edu.description}
+                                </Text>
+                            </View>
+                        ))}
+                    </View>
+                )}
 
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Skills</Text>
-                    <View style={styles.skillsGrid}>
-                        {data.skills.map((skill, index) => (
-                            <Text key={index} style={styles.skillItem}>
-                                {skill}
+                {data.skills.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Skills</Text>
+                        <View style={styles.skillsGrid}>
+                            {data.skills.map((skill, index) => (
+                                <Text key={index} style={styles.skillItem}>
+                                    {skill}
+                                </Text>
+                            ))}
+                        </View>
+                    </View>
+                )}
+
+                {data.certifications.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Certifications</Text>
+                        {data.certifications.map((cert) => (
+                            <View key={cert.id} style={styles.experienceItem}>
+                                <Text style={styles.jobTitle}>{cert.name}</Text>
+                                <Text style={styles.jobDetails}>
+                                    {cert.issuer} | {cert.issueDate}
+                                    {cert.expiryDate
+                                        ? ` - ${cert.expiryDate}`
+                                        : ""}
+                                </Text>
+                                {cert.description && (
+                                    <Text style={styles.description}>
+                                        {cert.description}
+                                    </Text>
+                                )}
+                            </View>
+                        ))}
+                    </View>
+                )}
+
+                {data.projects.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Projects</Text>
+                        {data.projects.map((proj) => (
+                            <View key={proj.id} style={styles.experienceItem}>
+                                <Text style={styles.jobTitle}>{proj.name}</Text>
+                                <Text style={styles.jobDetails}>
+                                    {proj.startDate}
+                                    {proj.endDate ? ` - ${proj.endDate}` : ""}
+                                </Text>
+                                <Text style={styles.description}>
+                                    Technologies: {proj.technologies.join(", ")}
+                                </Text>
+                                <Text style={styles.description}>
+                                    {proj.description}
+                                </Text>
+                                {proj.url && (
+                                    <Text style={styles.description}>
+                                        URL: {proj.url}
+                                    </Text>
+                                )}
+                            </View>
+                        ))}
+                    </View>
+                )}
+
+                {data.languages.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Languages</Text>
+                        {data.languages.map((lang) => (
+                            <Text key={lang.id} style={styles.description}>
+                                {lang.name} - {lang.proficiency}
                             </Text>
                         ))}
                     </View>
-                </View>
+                )}
             </Page>
         </Document>
     );

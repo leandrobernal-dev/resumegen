@@ -147,7 +147,7 @@ export function PDFPreview({ data }: PDFPreviewProps) {
                 Array.from({ length: numPages }, (_, i) => (
                     <div
                         key={i}
-                        className="bg-white rounded-lg shadow-lg overflow-hidden"
+                        className="bg-white  shadow-lg overflow-hidden"
                     >
                         <canvas ref={handleCanvasRef(i)} className="w-full" />
                     </div>

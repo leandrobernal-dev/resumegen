@@ -35,6 +35,8 @@ export default function RootLayout({
             >
                 {children}
                 <GoogleAnalytics gaId="G-YLVVD3KLEL" />
+
+                <GoogleAdsense pId={process.env.ADSENSE_PID || ""} />
             </body>
         </html>
     );

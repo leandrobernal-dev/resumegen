@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import GoogleAdsense from "@/components/adsense";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import Script from "next/script";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -38,14 +37,6 @@ export default function RootLayout({
                 <GoogleAnalytics gaId="G-YLVVD3KLEL" />
 
                 <GoogleAdsense pId={process.env.ADSENSE_PID || ""} />
-
-                <Script
-                    src="https://alwingulla.com/88/tag.min.js"
-                    data-zone="126181"
-                    strategy="beforeInteractive"
-                    async
-                    data-cfasync="false"
-                ></Script>
             </body>
         </html>
     );

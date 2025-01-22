@@ -82,7 +82,7 @@ export function DownloadDialog({
                             </p>
                             {!showDownloadButton && (
                                 <CountdownTimer
-                                    seconds={15}
+                                    seconds={5}
                                     onComplete={() =>
                                         setShowDownloadButton(true)
                                     }
@@ -92,12 +92,24 @@ export function DownloadDialog({
                     ) : (
                         <div className="space-y-4">
                             <div className="min-h-[250px] bg-muted rounded-lg flex items-center justify-center">
-                                <p className="text-sm text-muted-foreground">
-                                    Advertisement
-                                </p>
+                                <ins
+                                    className="adsbygoogle"
+                                    style={{ display: "block" }}
+                                    data-ad-client="ca-pub-1347372836296078"
+                                    data-ad-slot="1231628567"
+                                    data-ad-format="auto"
+                                    data-full-width-responsive="true"
+                                ></ins>
+                                Ads
                             </div>
                             {!showDownloadButton && (
-                                <div className="flex justify-center">
+                                <div className="flex justify-center gap-4 items-center flex-col">
+                                    <CountdownTimer
+                                        seconds={15}
+                                        onComplete={() =>
+                                            setShowDownloadButton(true)
+                                        }
+                                    />
                                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
                                 </div>
                             )}

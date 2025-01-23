@@ -1,993 +1,343 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import { PlusCircle, Trash2, Download } from "lucide-react";
-import type {
-    ResumeData,
-    Experience,
-    Education,
-    Certification,
-    Project,
-    Language,
-} from "@/types/resume";
-import { DownloadDialog } from "@/components/download-dialog";
-
-import { generateId } from "@/utils/generateId";
-import { TemplateSelector } from "@/components/template-selector";
-import { PDFPreview } from "@/components/preview";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Card, CardContent } from "@/components/ui/card";
+import { BackToTop } from "@/components/back-to-top";
+import {
+    ArrowRight,
+    CheckCircle2,
+    FileText,
+    Layout,
+    Settings2,
+    Star,
+} from "lucide-react";
 
-export default function ResumeGenerator() {
-    const [resumeData, setResumeData] = useState<ResumeData>({
-        personalInfo: {
-            fullName: "John Doe",
-            email: "john.doe@example.com",
-            phone: "(123) 456-7890",
-            location: "New York, NY",
-            website: "johndoe.com",
-            summary: "Experienced professional with a track record of...",
-        },
-        experience: [],
-        education: [],
-        skills: [],
-        certifications: [],
-        projects: [],
-        languages: [],
-        template: "classic",
-    });
+const templates = [
+    {
+        id: "classic",
+        name: "Classic",
+        image: "/file.svg",
+        description: "Traditional layout with centered header",
+    },
+    {
+        id: "modern",
+        name: "Modern",
+        image: "/file.svg",
+        description: "Contemporary design with sidebar",
+    },
+    {
+        id: "minimalist",
+        name: "Minimalist",
+        image: "/file.svg",
+        description: "Clean two-column layout with icons",
+    },
+    {
+        id: "professional",
+        name: "Professional",
+        image: "/file.svg",
+        description: "Traditional with accent colors",
+    },
+];
 
-    const [showDownLoadDialog, setShowDownloadDialog] = useState(false);
+const features = [
+    {
+        icon: FileText,
+        title: "Easy to Use",
+        description:
+            "Our intuitive interface guides you through every step of creating your CV.",
+    },
+    {
+        icon: Layout,
+        title: "Professional Templates",
+        description:
+            "Choose from our collection of ATS-friendly, professionally designed templates.",
+    },
+    {
+        icon: Settings2,
+        title: "Customizable",
+        description:
+            "Personalize every aspect of your CV to match your style and industry.",
+    },
+];
 
-    const addExperience = () => {
-        setResumeData({
-            ...resumeData,
-            experience: [
-                ...resumeData.experience,
-                {
-                    id: generateId(),
-                    company: "",
-                    position: "",
-                    location: "",
-                    startDate: "",
-                    endDate: "",
-                    description: "",
-                },
-            ],
-        });
-    };
+const testimonials = [
+    {
+        name: "Sarah Johnson",
+        role: "Software Engineer",
+        content:
+            "ResumeA helped me create a professional CV that landed me my dream job. The templates are modern and the interface is so easy to use!",
+        rating: 5,
+    },
+    {
+        name: "Michael Chen",
+        role: "Marketing Manager",
+        content:
+            "I was amazed by how quickly I could create a polished CV. The customization options are fantastic and the final result looks great.",
+        rating: 5,
+    },
+    {
+        name: "Emily Brown",
+        role: "Graphic Designer",
+        content:
+            "The templates are beautifully designed and the whole process is seamless. Highly recommend for creative professionals!",
+        rating: 5,
+    },
+];
 
-    const addEducation = () => {
-        setResumeData({
-            ...resumeData,
-            education: [
-                ...resumeData.education,
-                {
-                    id: generateId(),
-                    school: "",
-                    degree: "",
-                    fieldOfStudy: "",
-                    startDate: "",
-                    endDate: "",
-                    description: "",
-                },
-            ],
-        });
-    };
+const faqs = [
+    {
+        question: "What is a CV?",
+        answer: "A CV (Curriculum Vitae) is a comprehensive document that outlines your professional and academic history. It serves as a marketing tool to present your skills, experience, and qualifications to potential employers.",
+    },
+    {
+        question: "What sections should I include in my CV?",
+        answer: "Essential sections include: Personal Information, Professional Summary, Work Experience, Education, and Skills. Optional sections can include: Languages, Certifications, Projects, Publications, Awards, and Volunteer Experience.",
+    },
+    {
+        question: "How long should my CV be?",
+        answer: "The ideal length of a CV depends on your experience and industry. Generally, it should be 1-2 pages for early career professionals, and can be longer for academic or senior positions.",
+    },
+];
 
-    const addCertification = () => {
-        setResumeData({
-            ...resumeData,
-            certifications: [
-                ...resumeData.certifications,
-                {
-                    id: generateId(),
-                    name: "",
-                    issuer: "",
-                    issueDate: "",
-                    expiryDate: "",
-                    credentialId: "",
-                    description: "",
-                },
-            ],
-        });
-    };
-
-    const addProject = () => {
-        setResumeData({
-            ...resumeData,
-            projects: [
-                ...resumeData.projects,
-                {
-                    id: generateId(),
-                    name: "",
-                    description: "",
-                    startDate: "",
-                    endDate: "",
-                    url: "",
-                    technologies: [],
-                },
-            ],
-        });
-    };
-
-    const addLanguage = () => {
-        setResumeData({
-            ...resumeData,
-            languages: [
-                ...resumeData.languages,
-                {
-                    id: generateId(),
-                    name: "",
-                    proficiency: "Professional",
-                },
-            ],
-        });
-    };
-
-    const updatePersonalInfo = (field: string, value: string) => {
-        setResumeData({
-            ...resumeData,
-            personalInfo: {
-                ...resumeData.personalInfo,
-                [field]: value,
-            },
-        });
-    };
-
-    const updateExperience = (
-        id: string,
-        field: keyof Omit<Experience, "id">,
-        value: string
-    ) => {
-        setResumeData({
-            ...resumeData,
-            experience: resumeData.experience.map((exp) =>
-                exp.id === id ? { ...exp, [field]: value } : exp
-            ),
-        });
-    };
-
-    const updateEducation = (
-        id: string,
-        field: keyof Omit<Education, "id">,
-        value: string
-    ) => {
-        setResumeData({
-            ...resumeData,
-            education: resumeData.education.map((edu) =>
-                edu.id === id ? { ...edu, [field]: value } : edu
-            ),
-        });
-    };
-
-    const updateCertification = (
-        id: string,
-        field: keyof Omit<Certification, "id">,
-        value: string
-    ) => {
-        setResumeData({
-            ...resumeData,
-            certifications: resumeData.certifications.map((cert) =>
-                cert.id === id ? { ...cert, [field]: value } : cert
-            ),
-        });
-    };
-
-    const updateProject = (
-        id: string,
-        field: keyof Omit<Project, "id" | "technologies">,
-        value: string
-    ) => {
-        setResumeData({
-            ...resumeData,
-            projects: resumeData.projects.map((proj) =>
-                proj.id === id ? { ...proj, [field]: value } : proj
-            ),
-        });
-    };
-
-    const updateProjectTechnologies = (id: string, value: string) => {
-        setResumeData({
-            ...resumeData,
-            projects: resumeData.projects.map((proj) =>
-                proj.id === id
-                    ? {
-                          ...proj,
-                          technologies: value
-                              .split(",")
-                              .map((tech) => tech.trim()),
-                      }
-                    : proj
-            ),
-        });
-    };
-
-    const updateLanguage = (
-        id: string,
-        field: keyof Omit<Language, "id">,
-        value: string
-    ) => {
-        setResumeData({
-            ...resumeData,
-            languages: resumeData.languages.map((lang) =>
-                lang.id === id ? { ...lang, [field]: value } : lang
-            ),
-        });
-    };
-
-    const updateSkills = (value: string) => {
-        setResumeData({
-            ...resumeData,
-            skills: value.split(",").map((skill) => skill.trim()),
-        });
-    };
-
-    const removeExperience = (id: string) => {
-        setResumeData({
-            ...resumeData,
-            experience: resumeData.experience.filter((exp) => exp.id !== id),
-        });
-    };
-
-    const removeEducation = (id: string) => {
-        setResumeData({
-            ...resumeData,
-            education: resumeData.education.filter((edu) => edu.id !== id),
-        });
-    };
-
-    const removeCertification = (id: string) => {
-        setResumeData({
-            ...resumeData,
-            certifications: resumeData.certifications.filter(
-                (cert) => cert.id !== id
-            ),
-        });
-    };
-
-    const removeProject = (id: string) => {
-        setResumeData({
-            ...resumeData,
-            projects: resumeData.projects.filter((proj) => proj.id !== id),
-        });
-    };
-
-    const removeLanguage = (id: string) => {
-        setResumeData({
-            ...resumeData,
-            languages: resumeData.languages.filter((lang) => lang.id !== id),
-        });
-    };
-
+export default function Home() {
     return (
-        <div className="container mx-auto p-6 grid md:grid-cols-2 gap-6">
-            <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">Resume Generator</h1>
-                    <TemplateSelector
-                        selectedTemplate={resumeData.template}
-                        onSelect={(template) =>
-                            setResumeData({ ...resumeData, template })
-                        }
-                    />
+        <div className="flex flex-col min-h-screen">
+            <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-gradient-to-b from-secondary via-background to-background">
+                <div className="container px-4 md:px-6">
+                    <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 xl:grid-cols-2">
+                        <div className="flex flex-col justify-center space-y-4">
+                            <div className="space-y-2">
+                                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+                                    Create Your Professional
+                                    <span className="block gradient-text">
+                                        CV in Minutes
+                                    </span>
+                                </h1>
+                                <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
+                                    Free online CV maker with professional
+                                    templates. No registration required.
+                                </p>
+                            </div>
+                            <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                                <Link href="/builder">
+                                    <Button
+                                        size="lg"
+                                        className="group bg-primary hover:bg-primary/90"
+                                    >
+                                        Create your CV now
+                                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                    </Button>
+                                </Link>
+                            </div>
+                            <div className="flex items-center gap-4 text-sm">
+                                <div className="flex items-center gap-1">
+                                    <CheckCircle2 className="h-4 w-4 text-primary" />
+                                    <span>Free forever</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <CheckCircle2 className="h-4 w-4 text-primary" />
+                                    <span>No registration</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <CheckCircle2 className="h-4 w-4 text-primary" />
+                                    <span>ATS-friendly</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex items-center justify-center lg:order-last">
+                            <DotLottieReact
+                                src="https://lottie.host/58783af6-3fd3-474c-b3cc-3d607f680fc8/4FuejBjtKu.lottie"
+                                loop
+                                autoplay
+                            />
+                        </div>
+                    </div>
                 </div>
-                <Accordion
-                    type="single"
-                    collapsible
-                    defaultValue="personal"
-                    className="w-full"
-                >
-                    <AccordionItem value="personal">
-                        <AccordionTrigger>
-                            Personal Information
-                        </AccordionTrigger>
-                        <AccordionContent>
-                            <Card>
-                                <CardContent className="pt-6 space-y-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="fullName">
-                                            Full Name
-                                        </Label>
-                                        <Input
-                                            id="fullName"
-                                            value={
-                                                resumeData.personalInfo.fullName
-                                            }
-                                            onChange={(e) =>
-                                                updatePersonalInfo(
-                                                    "fullName",
-                                                    e.target.value
-                                                )
-                                            }
-                                            placeholder="John Doe"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="email">Email</Label>
-                                        <Input
-                                            id="email"
-                                            type="email"
-                                            value={
-                                                resumeData.personalInfo.email
-                                            }
-                                            onChange={(e) =>
-                                                updatePersonalInfo(
-                                                    "email",
-                                                    e.target.value
-                                                )
-                                            }
-                                            placeholder="john.doe@example.com"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="phone">Phone</Label>
-                                        <Input
-                                            id="phone"
-                                            value={
-                                                resumeData.personalInfo.phone
-                                            }
-                                            onChange={(e) =>
-                                                updatePersonalInfo(
-                                                    "phone",
-                                                    e.target.value
-                                                )
-                                            }
-                                            placeholder="(123) 456-7890"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="location">
-                                            Location
-                                        </Label>
-                                        <Input
-                                            id="location"
-                                            value={
-                                                resumeData.personalInfo.location
-                                            }
-                                            onChange={(e) =>
-                                                updatePersonalInfo(
-                                                    "location",
-                                                    e.target.value
-                                                )
-                                            }
-                                            placeholder="New York, NY"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="website">Website</Label>
-                                        <Input
-                                            id="website"
-                                            value={
-                                                resumeData.personalInfo.website
-                                            }
-                                            onChange={(e) =>
-                                                updatePersonalInfo(
-                                                    "website",
-                                                    e.target.value
-                                                )
-                                            }
-                                            placeholder="johndoe.com"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="summary">
-                                            Professional Summary
-                                        </Label>
-                                        <Textarea
-                                            id="summary"
-                                            value={
-                                                resumeData.personalInfo.summary
-                                            }
-                                            onChange={(e) =>
-                                                updatePersonalInfo(
-                                                    "summary",
-                                                    e.target.value
-                                                )
-                                            }
-                                            placeholder="Experienced professional with a track record of..."
-                                        />
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </AccordionContent>
-                    </AccordionItem>
+            </section>
 
-                    <AccordionItem value="experience">
-                        <AccordionTrigger>Experience</AccordionTrigger>
-                        <AccordionContent className="space-y-4">
-                            {resumeData.experience.map((exp) => (
-                                <Card key={exp.id}>
-                                    <CardContent className="pt-6 space-y-4">
-                                        <div className="flex justify-end">
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() =>
-                                                    removeExperience(exp.id)
-                                                }
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>Company</Label>
-                                            <Input
-                                                value={exp.company}
-                                                onChange={(e) =>
-                                                    updateExperience(
-                                                        exp.id,
-                                                        "company",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="Company Name"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>Position</Label>
-                                            <Input
-                                                value={exp.position}
-                                                onChange={(e) =>
-                                                    updateExperience(
-                                                        exp.id,
-                                                        "position",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="Job Title"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>Location</Label>
-                                            <Input
-                                                value={exp.location}
-                                                onChange={(e) =>
-                                                    updateExperience(
-                                                        exp.id,
-                                                        "location",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="City, State"
-                                            />
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <Label>Start Date</Label>
-                                                <Input
-                                                    type="date"
-                                                    value={exp.startDate}
-                                                    onChange={(e) =>
-                                                        updateExperience(
-                                                            exp.id,
-                                                            "startDate",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
+            <section className="w-full py-12 md:py-24 lg:py-32">
+                <div className="container px-4 md:px-6">
+                    <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                        <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                            Features that Make a Difference
+                        </h2>
+                        <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+                            Everything you need to create a professional CV that
+                            stands out
+                        </p>
+                    </div>
+                    <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3 lg:gap-12 mt-12">
+                        {features.map((feature) => {
+                            const Icon = feature.icon;
+                            return (
+                                <Card
+                                    key={feature.title}
+                                    className="relative overflow-hidden"
+                                >
+                                    <CardContent className="p-6">
+                                        <div className="flex flex-col items-center space-y-4 text-center">
+                                            <div className="rounded-full bg-secondary p-3">
+                                                <Icon className="h-6 w-6 text-primary" />
                                             </div>
-                                            <div className="space-y-2">
-                                                <Label>End Date</Label>
-                                                <Input
-                                                    type="date"
-                                                    value={exp.endDate}
-                                                    onChange={(e) =>
-                                                        updateExperience(
-                                                            exp.id,
-                                                            "endDate",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>Description</Label>
-                                            <Textarea
-                                                value={exp.description}
-                                                onChange={(e) =>
-                                                    updateExperience(
-                                                        exp.id,
-                                                        "description",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="Describe your responsibilities and achievements..."
-                                            />
+                                            <h3 className="text-xl font-bold">
+                                                {feature.title}
+                                            </h3>
+                                            <p className="text-muted-foreground">
+                                                {feature.description}
+                                            </p>
                                         </div>
                                     </CardContent>
                                 </Card>
-                            ))}
-                            <Button onClick={addExperience} className="w-full">
-                                <PlusCircle className="mr-2 h-4 w-4" />
-                                Add Experience
-                            </Button>
-                        </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="education">
-                        <AccordionTrigger>Education</AccordionTrigger>
-                        <AccordionContent className="space-y-4">
-                            {resumeData.education.map((edu) => (
-                                <Card key={edu.id}>
-                                    <CardContent className="pt-6 space-y-4">
-                                        <div className="flex justify-end">
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() =>
-                                                    removeEducation(edu.id)
-                                                }
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>School</Label>
-                                            <Input
-                                                value={edu.school}
-                                                onChange={(e) =>
-                                                    updateEducation(
-                                                        edu.id,
-                                                        "school",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="University Name"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>Degree</Label>
-                                            <Input
-                                                value={edu.degree}
-                                                onChange={(e) =>
-                                                    updateEducation(
-                                                        edu.id,
-                                                        "degree",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="Bachelor of Science"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>Field of Study</Label>
-                                            <Input
-                                                value={edu.fieldOfStudy}
-                                                onChange={(e) =>
-                                                    updateEducation(
-                                                        edu.id,
-                                                        "fieldOfStudy",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="Computer Science"
-                                            />
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <Label>Start Date</Label>
-                                                <Input
-                                                    type="date"
-                                                    value={edu.startDate}
-                                                    onChange={(e) =>
-                                                        updateEducation(
-                                                            edu.id,
-                                                            "startDate",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label>End Date</Label>
-                                                <Input
-                                                    type="date"
-                                                    value={edu.endDate}
-                                                    onChange={(e) =>
-                                                        updateEducation(
-                                                            edu.id,
-                                                            "endDate",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>Description</Label>
-                                            <Textarea
-                                                value={edu.description}
-                                                onChange={(e) =>
-                                                    updateEducation(
-                                                        edu.id,
-                                                        "description",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="Describe your academic achievements..."
-                                            />
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                            <Button onClick={addEducation} className="w-full">
-                                <PlusCircle className="mr-2 h-4 w-4" />
-                                Add Education
-                            </Button>
-                        </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="certifications">
-                        <AccordionTrigger>Certifications</AccordionTrigger>
-                        <AccordionContent className="space-y-4">
-                            {resumeData.certifications.map((cert) => (
-                                <Card key={cert.id}>
-                                    <CardContent className="pt-6 space-y-4">
-                                        <div className="flex justify-end">
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() =>
-                                                    removeCertification(cert.id)
-                                                }
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>Certification Name</Label>
-                                            <Input
-                                                value={cert.name}
-                                                onChange={(e) =>
-                                                    updateCertification(
-                                                        cert.id,
-                                                        "name",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="AWS Certified Solutions Architect"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>Issuer</Label>
-                                            <Input
-                                                value={cert.issuer}
-                                                onChange={(e) =>
-                                                    updateCertification(
-                                                        cert.id,
-                                                        "issuer",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="Amazon Web Services"
-                                            />
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <Label>Issue Date</Label>
-                                                <Input
-                                                    type="date"
-                                                    value={cert.issueDate}
-                                                    onChange={(e) =>
-                                                        updateCertification(
-                                                            cert.id,
-                                                            "issueDate",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label>
-                                                    Expiry Date (Optional)
-                                                </Label>
-                                                <Input
-                                                    type="date"
-                                                    value={cert.expiryDate}
-                                                    onChange={(e) =>
-                                                        updateCertification(
-                                                            cert.id,
-                                                            "expiryDate",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>
-                                                Credential ID (Optional)
-                                            </Label>
-                                            <Input
-                                                value={cert.credentialId}
-                                                onChange={(e) =>
-                                                    updateCertification(
-                                                        cert.id,
-                                                        "credentialId",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="ABC123XYZ"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>
-                                                Description (Optional)
-                                            </Label>
-                                            <Textarea
-                                                value={cert.description}
-                                                onChange={(e) =>
-                                                    updateCertification(
-                                                        cert.id,
-                                                        "description",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="Describe the certification and your achievements..."
-                                            />
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                            <Button
-                                onClick={addCertification}
-                                className="w-full"
+                            );
+                        })}
+                    </div>
+                </div>
+            </section>
+
+            <section
+                id="templates"
+                className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30"
+            >
+                <div className="container px-4 md:px-6">
+                    <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                        <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                            Professional CV Templates
+                        </h2>
+                        <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+                            Choose from our collection of professionally
+                            designed templates
+                        </p>
+                    </div>
+                    <div className="grid gap-6 mt-12 md:grid-cols-2 lg:grid-cols-4">
+                        {templates.map((template) => (
+                            <Card
+                                key={template.id}
+                                className="group overflow-hidden transition-all hover:shadow-lg"
                             >
-                                <PlusCircle className="mr-2 h-4 w-4" />
-                                Add Certification
-                            </Button>
-                        </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="projects">
-                        <AccordionTrigger>Projects</AccordionTrigger>
-                        <AccordionContent className="space-y-4">
-                            {resumeData.projects.map((proj) => (
-                                <Card key={proj.id}>
-                                    <CardContent className="pt-6 space-y-4">
-                                        <div className="flex justify-end">
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() =>
-                                                    removeProject(proj.id)
-                                                }
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>Project Name</Label>
-                                            <Input
-                                                value={proj.name}
-                                                onChange={(e) =>
-                                                    updateProject(
-                                                        proj.id,
-                                                        "name",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="E-commerce Platform"
-                                            />
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <Label>Start Date</Label>
-                                                <Input
-                                                    type="date"
-                                                    value={proj.startDate}
-                                                    onChange={(e) =>
-                                                        updateProject(
-                                                            proj.id,
-                                                            "startDate",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label>
-                                                    End Date (Optional)
-                                                </Label>
-                                                <Input
-                                                    type="date"
-                                                    value={proj.endDate}
-                                                    onChange={(e) =>
-                                                        updateProject(
-                                                            proj.id,
-                                                            "endDate",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>
-                                                Project URL (Optional)
-                                            </Label>
-                                            <Input
-                                                value={proj.url}
-                                                onChange={(e) =>
-                                                    updateProject(
-                                                        proj.id,
-                                                        "url",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="https://project-demo.com"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>
-                                                Technologies Used
-                                                (comma-separated)
-                                            </Label>
-                                            <Input
-                                                value={proj.technologies.join(
-                                                    ", "
-                                                )}
-                                                onChange={(e) =>
-                                                    updateProjectTechnologies(
-                                                        proj.id,
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="React, Node.js, TypeScript"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>Description</Label>
-                                            <Textarea
-                                                value={proj.description}
-                                                onChange={(e) =>
-                                                    updateProject(
-                                                        proj.id,
-                                                        "description",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="Describe the project, your role, and key achievements..."
-                                            />
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                            <Button onClick={addProject} className="w-full">
-                                <PlusCircle className="mr-2 h-4 w-4" />
-                                Add Project
-                            </Button>
-                        </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="languages">
-                        <AccordionTrigger>Languages</AccordionTrigger>
-                        <AccordionContent className="space-y-4">
-                            {resumeData.languages.map((lang) => (
-                                <Card key={lang.id}>
-                                    <CardContent className="pt-6 space-y-4">
-                                        <div className="flex justify-end">
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() =>
-                                                    removeLanguage(lang.id)
-                                                }
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>Language</Label>
-                                            <Input
-                                                value={lang.name}
-                                                onChange={(e) =>
-                                                    updateLanguage(
-                                                        lang.id,
-                                                        "name",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="English"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>Proficiency Level</Label>
-                                            <Select
-                                                value={lang.proficiency}
-                                                onValueChange={(value) =>
-                                                    updateLanguage(
-                                                        lang.id,
-                                                        "proficiency",
-                                                        value
-                                                    )
-                                                }
-                                            >
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select proficiency level" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="Native">
-                                                        Native
-                                                    </SelectItem>
-                                                    <SelectItem value="Fluent">
-                                                        Fluent
-                                                    </SelectItem>
-                                                    <SelectItem value="Professional">
-                                                        Professional
-                                                    </SelectItem>
-                                                    <SelectItem value="Intermediate">
-                                                        Intermediate
-                                                    </SelectItem>
-                                                    <SelectItem value="Basic">
-                                                        Basic
-                                                    </SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                            <Button onClick={addLanguage} className="w-full">
-                                <PlusCircle className="mr-2 h-4 w-4" />
-                                Add Language
-                            </Button>
-                        </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="skills">
-                        <AccordionTrigger>Skills</AccordionTrigger>
-                        <AccordionContent>
-                            <Card>
-                                <CardContent className="pt-6">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="skills">
-                                            Skills (comma-separated)
-                                        </Label>
-                                        <Textarea
-                                            id="skills"
-                                            value={resumeData.skills.join(", ")}
-                                            onChange={(e) =>
-                                                updateSkills(e.target.value)
+                                <CardContent className="p-0">
+                                    <div className="relative aspect-[210/297] overflow-hidden">
+                                        <Image
+                                            src={
+                                                template.image ||
+                                                "/placeholder.svg"
                                             }
-                                            placeholder="React, JavaScript, TypeScript, etc."
+                                            alt={template.name}
+                                            fill
+                                            className="object-cover transition-transform group-hover:scale-105"
                                         />
+                                    </div>
+                                    <div className="p-4">
+                                        <h3 className="font-semibold">
+                                            {template.name}
+                                        </h3>
+                                        <p className="text-sm text-gray-500">
+                                            {template.description}
+                                        </p>
                                     </div>
                                 </CardContent>
                             </Card>
-                        </AccordionContent>
-                    </AccordionItem>
-                </Accordion>
-            </div>
-            <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-bold">Preview</h2>
-                    <Button onClick={() => setShowDownloadDialog(true)}>
-                        <Download className="mr-2 h-4 w-4" />
-                        Download PDF
-                    </Button>
+                        ))}
+                    </div>
+                    <div className="flex justify-center mt-12">
+                        <Link href="/builder">
+                            <Button size="lg" className="group">
+                                Create Your CV Now
+                                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
-                <PDFPreview data={resumeData} />
-            </div>
-            <DownloadDialog
-                open={showDownLoadDialog}
-                onOpenChange={setShowDownloadDialog}
-                data={resumeData}
-            />
+            </section>
+
+            <section className="w-full py-12 md:py-24 lg:py-32">
+                <div className="container px-4 md:px-6">
+                    <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                        <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                            What Our Users Say
+                        </h2>
+                        <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+                            Join thousands of satisfied users who have created
+                            their perfect CV
+                        </p>
+                    </div>
+                    <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3 lg:gap-12 mt-12">
+                        {testimonials.map((testimonial) => (
+                            <Card
+                                key={testimonial.name}
+                                className="relative overflow-hidden"
+                            >
+                                <CardContent className="p-6">
+                                    <div className="flex flex-col space-y-4">
+                                        <div className="flex gap-0.5">
+                                            {Array.from({
+                                                length: testimonial.rating,
+                                            }).map((_, i) => (
+                                                <Star
+                                                    key={i}
+                                                    className="h-5 w-5 fill-primary text-primary"
+                                                />
+                                            ))}
+                                        </div>
+                                        <p className="text-muted-foreground">
+                                            {testimonial.content}
+                                        </p>
+                                        <div>
+                                            <p className="font-semibold">
+                                                {testimonial.name}
+                                            </p>
+                                            <p className="text-sm text-muted-foreground">
+                                                {testimonial.role}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            <section className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30">
+                <div className="container px-4 md:px-6">
+                    <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                        <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                            Frequently Asked Questions
+                        </h2>
+                        <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+                            Get answers to common questions about creating your
+                            CV
+                        </p>
+                    </div>
+                    <div className="mx-auto max-w-3xl mt-12">
+                        <Accordion type="single" collapsible className="w-full">
+                            {faqs.map((faq, index) => (
+                                <AccordionItem
+                                    key={index}
+                                    value={`item-${index}`}
+                                >
+                                    <AccordionTrigger className="text-left">
+                                        {faq.question}
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                        {faq.answer}
+                                    </AccordionContent>
+                                </AccordionItem>
+                            ))}
+                        </Accordion>
+                    </div>
+                </div>
+            </section>
+
+            <BackToTop />
         </div>
     );
 }

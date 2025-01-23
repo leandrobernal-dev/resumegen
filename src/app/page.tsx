@@ -25,25 +25,25 @@ const templates = [
     {
         id: "classic",
         name: "Classic",
-        image: "/file.svg",
+        image: "/templates/classic.png",
         description: "Traditional layout with centered header",
     },
     {
         id: "modern",
         name: "Modern",
-        image: "/file.svg",
+        image: "/templates/modern.png",
         description: "Contemporary design with sidebar",
     },
     {
-        id: "minimalist",
-        name: "Minimalist",
-        image: "/file.svg",
+        id: "engineering",
+        name: "Engineering",
+        image: "/templates/engineering.png",
         description: "Clean two-column layout with icons",
     },
     {
         id: "professional",
         name: "Professional",
-        image: "/file.svg",
+        image: "/templates/pro.png",
         description: "Traditional with accent colors",
     },
 ];

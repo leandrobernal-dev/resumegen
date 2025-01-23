@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "ResumeGen",
+    title: "topRes",
     description: "Generate a resume in seconds",
     other: {
         monetag: "e773c8e0eb75005895b66d306bfe0f20",

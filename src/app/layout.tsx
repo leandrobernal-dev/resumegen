@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import GoogleAdsense from "@/components/adsense";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { Navigation } from "@/components/navigation";
+import { Footer } from "@/components/footer";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -33,9 +35,11 @@ export default function RootLayout({
                 suppressHydrationWarning
                 className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#F8F9FA]`}
             >
-                {children}
-                <GoogleAnalytics gaId="G-YLVVD3KLEL" />
+                <Navigation />
+                <main>{children}</main>
+                <Footer />
 
+                <GoogleAnalytics gaId="G-YLVVD3KLEL" />
                 <GoogleAdsense pId={process.env.ADSENSE_PID || ""} />
             </body>
         </html>

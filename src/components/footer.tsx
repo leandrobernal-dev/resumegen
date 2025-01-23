@@ -4,7 +4,7 @@ import { Github, Twitter, Linkedin, Facebook } from "lucide-react";
 export function Footer() {
     return (
         <footer className="border-t bg-secondary/30">
-            <div className="container flex flex-col gap-8 py-12 md:flex-row md:justify-between">
+            <div className="container w-10/12 mx-auto flex flex-col gap-8 py-12 md:flex-row md:justify-between">
                 <div className="space-y-4 md:max-w-xs">
                     <Link href="/" className="flex items-center gap-2">
                         <span className="text-2xl font-bold">
@@ -160,10 +160,10 @@ export function Footer() {
                     </div>
                 </div>
             </div>
-            <div className="border-t">
+            <div className="border-t w-10/12 mx-auto">
                 <div className="container flex flex-col gap-4 py-6 text-center text-sm text-muted-foreground md:flex-row md:justify-between">
                     <p>
-                        © {new Date().getFullYear()} ResumeA. All rights
+                        © {new Date().getFullYear()} topRes. All rights
                         reserved.
                     </p>
                     <p>Made with ❤️ for job seekers worldwide</p>

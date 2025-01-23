@@ -5,10 +5,10 @@ export default function AboutPage() {
     return (
         <div className="container mx-auto px-4 py-12">
             <div className="max-w-3xl mx-auto">
-                <h1 className="text-4xl font-bold mb-8">About ResumeA</h1>
+                <h1 className="text-4xl font-bold mb-8">About topRes</h1>
                 <div className="prose dark:prose-invert max-w-none">
                     <p className="text-xl mb-6">
-                        ResumeA is a free online CV maker that helps job seekers
+                        topRes is a free online CV maker that helps job seekers
                         create professional resumes in minutes. Our platform
                         combines ease of use with professional designs to help
                         you stand out in your job search.
@@ -25,7 +25,7 @@ export default function AboutPage() {
                     </p>
 
                     <h2 className="text-2xl font-bold mt-12 mb-4">
-                        Why Choose ResumeA?
+                        Why Choose topRes?
                     </h2>
                     <ul className="list-disc pl-6 mb-6 space-y-2">
                         <li>Completely free to use</li>

@@ -7,9 +7,7 @@ export function Footer() {
             <div className="container w-10/12 mx-auto flex flex-col gap-8 py-12 md:flex-row md:justify-between">
                 <div className="space-y-4 md:max-w-xs">
                     <Link href="/" className="flex items-center gap-2">
-                        <span className="text-2xl font-bold">
-                            Resume<span className="gradient-text">A</span>
-                        </span>
+                        <span className="text-2xl font-bold">topRes</span>
                     </Link>
                     <p className="text-sm text-muted-foreground">
                         Create your professional resume in minutes. Free,

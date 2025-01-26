@@ -73,7 +73,8 @@ export default function ProfessionalTemplate({ data }: { data: ResumeData }) {
                     </Text>
                     <Text style={styles.headerSubtitle}>
                         {data.personalInfo.location} | {data.personalInfo.phone}{" "}
-                        | {data.personalInfo.email}
+                        | {data.personalInfo.email} |{" "}
+                        {data.personalInfo.website}
                     </Text>
                     <Text style={styles.description}>
                         {data.personalInfo.summary}

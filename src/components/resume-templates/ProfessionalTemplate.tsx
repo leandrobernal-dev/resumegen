@@ -93,7 +93,11 @@ export default function ProfessionalTemplate({ data }: { data: ResumeData }) {
                                 </Text>
                                 <Text style={styles.jobDetails}>
                                     {exp.company} | {exp.startDate} -{" "}
-                                    {exp.endDate}
+                                    {!exp.endDate ||
+                                    new Date(exp.endDate).toDateString() ===
+                                        new Date().toDateString()
+                                        ? "Present"
+                                        : exp.endDate}
                                 </Text>
                                 <Text style={styles.description}>
                                     {exp.description}
@@ -113,7 +117,11 @@ export default function ProfessionalTemplate({ data }: { data: ResumeData }) {
                                 </Text>
                                 <Text style={styles.jobDetails}>
                                     {edu.school} | {edu.startDate} -{" "}
-                                    {edu.endDate}
+                                    {!edu.endDate ||
+                                    new Date(edu.endDate).toDateString() ===
+                                        new Date().toDateString()
+                                        ? "Present"
+                                        : edu.endDate}
                                 </Text>
                                 <Text style={styles.description}>
                                     {edu.description}
@@ -165,8 +173,12 @@ export default function ProfessionalTemplate({ data }: { data: ResumeData }) {
                             <View key={proj.id} style={styles.experienceItem}>
                                 <Text style={styles.jobTitle}>{proj.name}</Text>
                                 <Text style={styles.jobDetails}>
-                                    {proj.startDate}
-                                    {proj.endDate ? ` - ${proj.endDate}` : ""}
+                                    {proj.startDate} {" - "}
+                                    {!proj.endDate ||
+                                    new Date(proj.endDate).toDateString() ===
+                                        new Date().toDateString()
+                                        ? "Present"
+                                        : proj.endDate}
                                 </Text>
                                 <Text style={styles.description}>
                                     Technologies: {proj.technologies.join(", ")}
